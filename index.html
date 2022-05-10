@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>虎康天气</title>
+  <style>
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      #main h1 {
+          padding-bottom: 30px;
+      }
+
+      #main {
+          width: 600px;
+          margin: 50px auto;
+          text-align: center;
+      }
+
+      #city {
+          float: left;
+          width: 450px;
+          height: 40px;
+          padding-left: 20px;
+          font-size: 16px;
+          border: 1px solid dodgerblue;
+      }
+
+      #city:focus {
+          outline: none;
+      }
+
+      #search {
+          width: 100%;
+          height: 40px;
+          position: relative;
+      }
+
+      #search span {
+          float: right;
+          width: 150px;
+          height: 40px;
+          line-height: 40px;
+          color: aliceblue;
+          background-color: dodgerblue;
+          cursor: default;//设置鼠标样式
+      }
+
+      .sicity {
+          width: 100%;
+          height: 40px;
+          color: rgb(134, 134, 134);
+      }
+
+      .sicity a {
+          display: block;
+          list-style: none;
+          float: left;
+          width: 50px;
+          cursor: pointer;
+      }
+
+      .week {
+          width: 800px;
+          height: 200px;
+          margin: 20px auto;
+          color: rgb(134, 134, 134);
+          font-family: "微软雅黑";
+
+
+      }
+
+      .week li {
+          float: left;
+          list-style: none;
+          text-align: center;
+          width: 160px;
+          border-right: 1px solid #ccc;
+      }
+
+      .week li p {
+          color: coral;
+          line-height: 40px;
+          font-size: 14px;
+      }
+
+      .week li:last-of-type {
+          border-right: 0px;
+      }
+
+      .week li span {
+          font-weight: 600;
+          color: coral;
+      }
+
+      .week div {
+          margin-top: 20px;
+      }
+
+      [v-cloak] {
+          display: none;
+      }
+  </style>
+</head>
+
+<body>
+<div id="app">
+  <div id="main">
+    <!--标题-->
+    <h1>虎康天气查询</h1>
+    <!--搜索框-->
+    <div id="search">
+      <input type="text" v-model='city' @keyup.enter="searchWeather" id='city'>
+      <span @click="searchWeather">搜索</span>
+    </div>
+    <div class="sicity">
+      <a @click="changeCity('上海')">上海</a>
+      <a @click="changeCity('北京')">北京</a>
+      <a @click="changeCity('广州')">广州</a>
+      <a @click="changeCity('深圳')">深圳</a>
+    </div>
+  </div>
+  <div class="week">
+    <li v-for="item in weaherList">
+      <span v-cloak>{{item.type}}</span>
+      <p v-cloak>{{item.low}}~{{item.high}}</p>
+      <div v-cloak>{{item.date}}</div>
+
+    </li>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+  var app = new Vue({
+    el: "#app",
+    data: {
+      city: '',
+      weaherList: [],
+    },
+    methods: {
+      searchWeather: function () {
+        //console.log('天气查询');测试挂载成功
+        //console.log(this.city);
+        //调用接口
+        //保存this，因为回调函数this已经改变了所以要保存它
+        var that = this;
+        axios.get('http://wthrcdn.etouch.cn/weather_mini?city=' + this.city)
+            .then(function (response) {
+              // console.log(response);
+              //console.log(response.data.data.forecast);//测试拿到了数据了
+              that.weaherList = response.data.data.forecast
+            })
+            .catch(function (err) { })
+      },
+
+      changeCity: function (city) {
+        this.city = city;
+        this.searchWeather();
+
+      }
+    }
+  })
+  //自定义参数可以让代码的复用性更高
+  //methods中定义的方法内部，可以通过this关键字点出其他的方法
+</script>
+
+</body>
+
+</html>

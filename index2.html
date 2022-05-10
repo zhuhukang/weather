@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>城市天气预报</title>
+  <style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    h1{
+        background-color: orange;
+        font-size: 40px;
+        text-align: center;
+    }
+    input{
+        width: 500px;
+        height: 40px;
+        margin-top: 10px;
+        font-size: 30px;
+        color: blue;
+    }
+    button{
+        height: 40px;
+        width: 100px;
+        margin-left: 10px;
+        font-size: 24px;
+        margin-top: 10px;
+    }
+    .box{
+        height: auto;
+        width: 100%;
+        background: skyblue;
+    }
+  </style>
+</head>
+<body>
+  <h1>城市天气预报</h1>
+  <input type="text"/>
+  <button>查询</button>
+<!--展示出来的效果-->
+<div class="box">
+  <h3>查询的城市是：北京</h3>
+  <p>更新的时间是：3点10分</p>
+  <p>现在的温度是：30度</p>
+  <p>最高温度是：40度</p>
+  <p>最低的温度是：30度</p>
+</div>
+  <script>
+    var btn = document.querySelector("button");
+    var txt = document.querySelector("input");
+    btn.onclick = function (){
+      var val = txt.value;
+      //  发送ajax
+      var xhr = new XMLHttpRequest();
+      xhr.open('get','http://wthrcdn.etouch.cn/weather_mini?city='+val);
+      xhr.onreadystatechange=function (){
+        if (xhr.readyState ==4 && xhr.status ==200){
+          console.log(xhr.responseText);// 获取到的是xml形式的字符串
+          // console.log(xhr.responseXML); // 获取到的是document，此处为无效
+          // console.log(xhr.statusText);//状态码返回ok
+
+          var resp = xhr.responseText.data.yesterday;
+          console.log(resp);
+        }
+      }
+      //发送请求
+      xhr.send()
+    }
+  </script>
+</body>
+</html>
